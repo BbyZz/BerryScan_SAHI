@@ -1,5 +1,6 @@
-# Inference-Slicer-RoboFlow-
-Inference Slicer - from Roboflow
+BerryScan_SAHI
+
+
 
 folder should contain the following:\
 "cbb.pt"\
