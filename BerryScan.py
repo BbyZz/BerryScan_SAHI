@@ -1,16 +1,9 @@
-#!/home/rpicoffee/Thesis/bin/python3
-import os
-import sys
-
-# Change working directory to the directory of main.py so relative paths (like cbb.pt) work correctly
-script_dir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(script_dir)
-
 import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import filedialog
 import cv2
 from PIL import Image, ImageTk
+import os
 from datetime import datetime
 import torch
 import numpy as np
@@ -20,7 +13,7 @@ try:
     from sahi.predict import get_sliced_prediction
     SAHI_AVAILABLE = True
 except ImportError:
-    print("❌ SAHI not installed. Please run: pip install sahi")
+    print("[Error] SAHI not installed. Please run: pip install sahi")
     SAHI_AVAILABLE = False
     from ultralytics import YOLO  
 
@@ -62,10 +55,10 @@ try:
     if torch.cuda.is_available():
         device = 'cuda:0'
         torch.cuda.empty_cache()
-        print(f"✅ CUDA available: {torch.cuda.get_device_name(0)}")
+        print(f"[OK] CUDA available: {torch.cuda.get_device_name(0)}")
     else:
         device = 'cpu'
-        print("⚠️ CUDA not available, using CPU.")
+        print("[Warning] CUDA not available, using CPU.")
 
     if SAHI_AVAILABLE:
         model = AutoDetectionModel.from_pretrained(
@@ -74,14 +67,14 @@ try:
             confidence_threshold=SAHI_CONFIG["model_confidence_threshold"],
             device=device,
         )
-        print("✅ SAHI + YOLO Model loaded successfully!")
+        print("[OK] SAHI + YOLO Model loaded successfully!")
     else:
         model = YOLO(SAHI_CONFIG["model_path"])
         model.to(device)
-        print("✅ Standard YOLO Model loaded (SAHI missing).")
+        print("[OK] Standard YOLO Model loaded (SAHI missing).")
 
 except Exception as e:
-    print(f"❌ Error loading model: {e}")
+    print(f"[Error] Error loading model: {e}")
     print(f"Make sure '{SAHI_CONFIG['model_path']}' is in the folder.")
 
 
@@ -143,7 +136,7 @@ def detect_objects(input_image):
             )
 
             object_prediction_list = result.object_prediction_list
-            print(f"✅ SAHI Complete: Found {len(object_prediction_list)} objects.")
+            print(f"[OK] SAHI Complete: Found {len(object_prediction_list)} objects.")
 
             for prediction in object_prediction_list:
                 score = prediction.score.value
@@ -183,7 +176,7 @@ def detect_objects(input_image):
                     cv2.putText(annotated_img, display_label, (xyxy[0], xyxy[1] - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
-        print(f"📊 Tally: {label_counts}")
+        print(f"[Tally] Tally: {label_counts}")
         return annotated_img, label_counts
 
     except Exception as e:
@@ -353,7 +346,7 @@ def run_model_clicked():
     global last_frame
     if not is_paused or last_frame is None:
         if results_label:
-            results_label.config(text="⚠️ Capture or upload\nan image first.")
+            results_label.config(text="[!] Capture or upload\nan image first.")
         print("Please Capture/Upload first.")
         return
 
@@ -372,7 +365,7 @@ def run_model_clicked():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = os.path.join(save_folder, f"berry_scan_{timestamp}.jpg")
     cv2.imwrite(filename, annotated_frame)
-    print(f"✅ Saved: {filename}")
+    print(f"[OK] Saved: {filename}")
 
 
 def update_camera_feed():
