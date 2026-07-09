@@ -18,3 +18,12 @@ Once done with the installation\
 Close the cmd terminal, then launch a new one, by doing the step earlier.\
 Then activate the environment with the libraries\
 Then type “python BerryScan_SAHI.py” to run the InfSlicer program.\
+
+[Desktop Entry]
+Name=BerryScan GUI
+Comment=Launch SAHI GUI App
+Exec=bash /home/rpicoffee/Downloads/T_Gui/run.sh
+Icon=utilities-terminal
+Terminal=true
+Type=Application
+Categories=Utility;
